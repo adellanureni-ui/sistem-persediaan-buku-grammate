@@ -17,6 +17,10 @@ Aplikasi web untuk mengelola stok buku sekaligus pembukuan toko, dari transaksi,
 
 **Grammate Bookstore** adalah sistem **akuntansi persediaan** untuk toko buku. Setiap transaksi yang dicatat langsung memengaruhi dua hal sekaligus: **jumlah stok** dan **pembukuan akuntansi**. Karena itu laporan keuangan selalu bersumber dari data yang sama dengan data persediaan.
 
+Untuk mengakses link demo, silakan gunakan akun berikut:
+- Username: admin
+- Password: buku123
+
 ---
 
 ## 🧾 Alur Akuntansi Persediaan

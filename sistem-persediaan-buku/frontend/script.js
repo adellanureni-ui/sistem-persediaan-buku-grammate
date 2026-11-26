@@ -31,23 +31,34 @@ if (sidebar && sidebarToggle) {
     sidebarToggle.title = isCollapsed ? 'Tampilkan sidebar' : 'Sembunyikan sidebar';
   });
 }
-const stickerBaseUrl = 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/';
-function addPixelSticker(element, emojiCode, className = 'pixel-sticker') {
-  if (!element || element.querySelector(`.${className}`)) return;
-  const image = document.createElement('img');
-  image.className = className;
-  image.src = `${stickerBaseUrl}${emojiCode}.png`;
-  image.alt = '';
-  image.setAttribute('aria-hidden', 'true');
-  element.prepend(image);
+const outlineIconPaths = {
+  '1f4c5': '<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M7 3v4M17 3v4M4 10h16"/>',
+  '1f4c1': '<path d="M3 6.5h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M3 9h18"/>',
+  '1f9ee': '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2M8 18h8"/>',
+  '1f4dd': '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h8"/>',
+  '1f50d': '<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>',
+  '1f4d6': '<path d="M3 5.5c4-1.5 7-.8 9 1v14c-2-1.8-5-2.5-9-1zM21 5.5c-4-1.5-7-.8-9 1v14c2-1.8 5-2.5 9-1z"/>',
+  '1f3ea': '<path d="M3 10h18v11H3zM2 10l2-6h16l2 6M7 21v-7h5v7M16 14h2"/>',
+  edit: '<path d="M12 20h9"/><path d="m16.5 3.5 4 4L9 19l-5 1 1-5z"/>',
+  delete: '<path d="M4 7h16M10 11v6M14 11v6M5 7l1 14h12l1-14M9 7V4h6v3"/>'
+};
+function replacePixelIcons(root = document) {
+  root.querySelectorAll('img.pixel-sticker').forEach((image) => {
+    const code = image.getAttribute('src')?.split('/').pop()?.replace('.png', '');
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.classList.add('pixel-sticker', 'outline-icon');
+    svg.innerHTML = outlineIconPaths[code] || outlineIconPaths['1f4d6'];
+    image.replaceWith(svg);
+  });
 }
-document.querySelectorAll('button').forEach((button) => {
-  const emojiCode = button.classList.contains('sidebar-toggle') ? '1f4d6'
-    : button.classList.contains('secondary-btn') ? '1f4c5'
-      : button.classList.contains('danger') ? '1f4c1'
-        : button.classList.contains('icon-btn') ? '1f4dd' : '1f9ee';
-  addPixelSticker(button, emojiCode);
-});
+replacePixelIcons();
+
+function actionIcon(name) {
+  return `<svg class="pixel-sticker outline-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${outlineIconPaths[name]}</svg>`;
+}
 
 const TABLES = {
   barang: 'barang',
@@ -70,6 +81,10 @@ const masterConfig = {
     fields: [
       { name: 'sku', label: 'Kode Barang' },
       { name: 'nama_barang', label: 'Nama Barang' },
+      { name: 'penulis', label: 'Penulis', required: false },
+      { name: 'isbn', label: 'ISBN', required: false },
+      { name: 'kategori', label: 'Kategori', required: false },
+      { name: 'penerbit', label: 'Penerbit', required: false },
       { name: 'harga_pokok', label: 'Harga Beli', type: 'number', min: '0', step: '1' },
       { name: 'harga_jual', label: 'Harga Jual', type: 'number', min: '0', step: '1' },
       { name: 'stok', label: 'Stok', type: 'number', min: '0', step: '1' }
@@ -97,9 +112,9 @@ const masterConfig = {
   }
 };
 const pageTitles = {
-  dashboard: 'Ringkasan', 'data-barang': 'Data Barang', 'data-pelanggan': 'Data Pelanggan', 'data-supplier': 'Data Supplier',
+  dashboard: 'Ringkasan', 'data-barang': 'Data Buku', 'data-pelanggan': 'Data Pelanggan', 'data-supplier': 'Data Supplier',
   'transaksi-pembelian': 'Transaksi Pembelian', 'transaksi-penjualan': 'Transaksi Penjualan', 'penyesuaian-stok': 'Penyesuaian Stok',
-  'jurnal-umum': 'Jurnal Umum', 'buku-besar': 'Buku Besar', 'laporan-barang': 'Laporan Barang',
+  'jurnal-umum': 'Jurnal Umum', 'buku-besar': 'Buku Besar', 'laporan-barang': 'Laporan Buku',
   'laporan-pembelian': 'Laporan Pembelian', 'laporan-penjualan': 'Laporan Penjualan', 'kartu-persediaan': 'Kartu Persediaan',
   'laporan-laba-rugi': 'Laporan Laba Rugi', neraca: 'Neraca'
 };
@@ -110,6 +125,7 @@ let supabaseClient;
 let refreshTimer;
 let realtimeChannel;
 let renderRequestId = 0;
+let authenticated = false;
 const dateColumnCache = new Map();
 
 function on(element, eventName, handler) {
@@ -242,7 +258,7 @@ function description(row) { return valueOf(row, 'keterangan', 'deskripsi', 'desc
 function stockOf(item) { return Number(valueOf(item, 'stok') || 0); }
 function stockKey() { return 'stok'; }
 function actionCell(kind, id) {
-  return `<td><div class="table-actions"><button class="table-action" type="button" data-master-action="edit" data-master-kind="${kind}" data-id="${safe(id)}"><img class="pixel-sticker" src="${stickerBaseUrl}1f4dd.png" alt="" aria-hidden="true" />Edit</button><button class="table-action danger" type="button" data-master-action="delete" data-master-kind="${kind}" data-id="${safe(id)}"><img class="pixel-sticker" src="${stickerBaseUrl}1f4c1.png" alt="" aria-hidden="true" />Hapus</button></div></td>`;
+  return `<td><div class="table-actions"><button class="table-action" type="button" data-master-action="edit" data-master-kind="${kind}" data-id="${safe(id)}">${actionIcon('edit')}Edit</button></div></td>`;
 }
 
 function setPage(page) {
@@ -294,11 +310,13 @@ function renderOptions() {
 
 function renderInventory() {
   const barang = state.barang;
-  const items = [...barang].sort((a, b) => itemName(a).localeCompare(itemName(b), 'id'));
-  const regular = (item) => `<tr><td>${safe(itemCode(item))}</td><td>${safe(itemName(item))}</td><td>-</td><td>${money(valueOf(item, 'harga_pokok'))}</td><td>${money(valueOf(item, 'harga_jual'))}</td><td><span class="stock-pill ${stockOf(item) <= 5 ? 'low' : ''}">${stockOf(item)}</span></td>${actionCell('barang', itemId(item))}</tr>`;
-  const report = (item) => `<tr><td>${safe(itemCode(item))}</td><td>${safe(itemName(item))}</td><td>-</td><td>${stockOf(item)}</td><td>${money(valueOf(item, 'harga_pokok'))}</td><td>${money(stockOf(item) * Number(valueOf(item, 'harga_pokok') || 0))}</td></tr>`;
-  setRows('barang-body', items, 7, regular);
-  setRows('laporan-barang-body', items, 6, report);
+  const items = filterBookItems([...barang].sort((a, b) => itemName(a).localeCompare(itemName(b), 'id')));
+  const regular = (item) => `<tr><td>${safe(itemCode(item))}</td><td>${safe(itemName(item))}</td><td>${safe(bookMetadata(item, 'penulis') || '-')}</td><td>${safe(bookMetadata(item, 'isbn') || '-')}</td><td>${safe(bookMetadata(item, 'kategori') || '-')}</td><td>${safe(bookMetadata(item, 'penerbit') || '-')}</td><td>${money(valueOf(item, 'harga_pokok'))}</td><td>${money(valueOf(item, 'harga_jual'))}</td><td><span class="stock-pill ${stockStatus(item) !== 'tersedia' ? 'low' : ''}">${stockOf(item)}</span></td>${actionCell('barang', itemId(item))}</tr>`;
+  const report = (item) => `<tr><td>${safe(itemCode(item))}</td><td>${safe(itemName(item))}</td><td>${safe(bookMetadata(item, 'penulis') || '-')}</td><td>${safe(bookMetadata(item, 'isbn') || '-')}</td><td>${safe(bookMetadata(item, 'kategori') || '-')}</td><td>${safe(bookMetadata(item, 'penerbit') || '-')}</td><td>${stockOf(item)}</td><td>${money(valueOf(item, 'harga_pokok'))}</td><td>${money(stockOf(item) * Number(valueOf(item, 'harga_pokok') || 0))}</td></tr>`;
+  setRows('barang-body', items, 10, regular);
+  setRows('laporan-barang-body', items, 9, report);
+  const countLabel = document.getElementById('book-filter-count');
+  if (countLabel) countLabel.textContent = `Menampilkan ${items.length} dari ${barang.length} buku`;
   const count = document.getElementById('stat-barang');
   const totalStock = document.getElementById('stat-stok');
   const totalPartners = document.getElementById('stat-mitra');
@@ -306,6 +324,257 @@ function renderInventory() {
   if (totalStock) totalStock.textContent = barang.reduce((sum, item) => sum + (Number(item.stok) || 0), 0).toLocaleString('id-ID');
   if (totalPartners) totalPartners.textContent = (state.pelanggan.length + state.supplier.length).toLocaleString('id-ID');
 }
+const bookMetadataKeys = {
+  judul: ['nama_barang', 'judul', 'title'],
+  penulis: ['penulis', 'author', 'pengarang'],
+  isbn: ['isbn', 'kode_isbn'],
+  kategori: ['kategori', 'category'],
+  penerbit: ['penerbit', 'publisher']
+};
+function bookMetadata(item, field) {
+  return valueOf(item, ...(bookMetadataKeys[field] || []));
+}
+function stockStatus(item) {
+  const stock = stockOf(item);
+  return stock <= 0 ? 'habis' : stock <= 5 ? 'menipis' : 'tersedia';
+}
+function currentBookFilters() {
+  const filters = {};
+  document.querySelectorAll('[data-book-filter]').forEach((input) => {
+    if (input.value.trim()) filters[input.dataset.bookFilter] = input.value.trim().toLocaleLowerCase('id');
+  });
+  return filters;
+}
+function filterBookItems(items) {
+  const filters = currentBookFilters();
+  return items.filter((item) => {
+    for (const field of ['judul', 'penulis', 'isbn', 'kategori', 'penerbit']) {
+      if (filters[field] && !String(bookMetadata(item, field)).toLocaleLowerCase('id').includes(filters[field])) return false;
+    }
+    return !filters.status || stockStatus(item) === filters.status;
+  });
+}
+function syncBookFilters(source) {
+  document.querySelectorAll(`[data-book-filter="${source.dataset.bookFilter}"]`).forEach((input) => {
+    if (input !== source) input.value = source.value;
+  });
+  renderInventory();
+}
+document.querySelectorAll('[data-book-filter]').forEach((input) => {
+  on(input, input.tagName === 'SELECT' ? 'change' : 'input', () => syncBookFilters(input));
+});
+document.querySelectorAll('[data-clear-book-filters]').forEach((button) => on(button, 'click', () => {
+  document.querySelectorAll('[data-book-filter]').forEach((input) => { input.value = ''; });
+  renderInventory();
+}));
+
+function exportData(type) {
+  const printedAt = new Date();
+  if (type === 'books') {
+    const items = filterBookItems([...state.barang].sort((a, b) => itemName(a).localeCompare(itemName(b), 'id')));
+    const totalAmount = items.reduce((sum, item) => sum + stockOf(item) * Number(valueOf(item, 'harga_pokok') || 0), 0);
+    return {
+      title: 'LAPORAN PERSEDIAAN & TRANSAKSI BUKU',
+      subtitle: 'Laporan persediaan buku',
+      filename: 'laporan-buku',
+      headers: ['Kode Buku', 'Judul', 'Penulis', 'ISBN', 'Kategori', 'Penerbit', 'Stok', 'Harga Beli', 'Nilai Stok'],
+      rows: items.map((item) => [itemCode(item), itemName(item), bookMetadata(item, 'penulis'), bookMetadata(item, 'isbn'),
+        bookMetadata(item, 'kategori'), bookMetadata(item, 'penerbit'), stockOf(item),
+        Number(valueOf(item, 'harga_pokok') || 0), stockOf(item) * Number(valueOf(item, 'harga_pokok') || 0)]),
+      currencyColumns: [7, 8],
+      printedAt,
+      recordCount: items.length,
+      totalAmount
+    };
+  }
+  const purchases = type === 'purchases';
+  const entries = purchases ? state.pembelian : state.penjualan;
+  return {
+    title: 'LAPORAN PERSEDIAAN & TRANSAKSI BUKU',
+    subtitle: `Laporan transaksi ${purchases ? 'pembelian' : 'penjualan'}`,
+    filename: purchases ? 'laporan-pembelian' : 'laporan-penjualan',
+    headers: ['Tanggal', purchases ? 'No Faktur' : 'No Nota', purchases ? 'Supplier' : 'Pelanggan', 'Barang', 'Jumlah', 'Harga Satuan', 'Total'],
+    rows: entries.map((row) => [dateText(row), reference(row), resolveName(row, purchases ? 'supplier' : 'pelanggan'),
+      resolveName(row, 'barang'), qtyOf(row), Number(valueOf(row, 'harga_satuan') || 0), totalOf(row)]),
+    currencyColumns: [5, 6],
+    printedAt,
+    recordCount: entries.length,
+    totalAmount: entries.reduce((sum, row) => sum + totalOf(row), 0)
+  };
+}
+function csvCell(value) {
+  let text = String(value ?? '');
+  if (typeof value === 'string' && /^[\s]*[=+\-@]/.test(text)) text = `'${text}`;
+  return `"${text.replace(/"/g, '""')}"`;
+}
+function downloadCsv(report) {
+  const metadata = [
+    [report.title],
+    [report.subtitle],
+    [`Dicetak: ${report.printedAt.toLocaleString('id-ID')}`],
+    [`Jumlah data: ${report.recordCount}`, `Total nilai: ${money(report.totalAmount)}`],
+    []
+  ];
+  const headers = ['No.', ...report.headers];
+  const rows = report.rows.map((row, index) => [
+    index + 1,
+    ...row.map((value, column) => report.currencyColumns.includes(column) ? money(value) : value)
+  ]);
+  const content = [...metadata, headers, ...rows].map((row) => row.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob(['\uFEFF', content], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${report.filename}.csv`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+async function downloadXlsx(report) {
+  if (!window.ExcelJS) throw new Error('Pustaka ExcelJS tidak tersedia. Periksa koneksi internet lalu coba lagi.');
+  const workbook = new window.ExcelJS.Workbook();
+  workbook.creator = 'Grammate Bookstore';
+  workbook.created = report.printedAt;
+  const sheet = workbook.addWorksheet('Laporan', {
+    pageSetup: { orientation: report.headers.length > 6 ? 'landscape' : 'portrait', fitToPage: true, fitToWidth: 1 }
+  });
+  const columnCount = report.headers.length + 1;
+  const endColumn = sheet.getColumn(columnCount).letter;
+  sheet.mergeCells(`A1:${endColumn}1`);
+  sheet.getCell('A1').value = 'GRAMMATE BOOKSTORE';
+  sheet.getCell('A1').font = { name: 'Playfair Display', size: 17, bold: true, color: { argb: 'FFF2E9D8' } };
+  sheet.getCell('A1').alignment = { vertical: 'middle' };
+  sheet.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F3A2E' } };
+  sheet.getCell('A1').border = { bottom: { style: 'medium', color: { argb: 'FFB59A62' } } };
+  sheet.getRow(1).height = 30;
+  sheet.mergeCells(`A2:${endColumn}2`);
+  sheet.getCell('A2').value = report.title;
+  sheet.getCell('A2').font = { name: 'Playfair Display', size: 13, bold: true, color: { argb: 'FF6B1D24' } };
+  sheet.getCell('A2').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2E9D8' } };
+  sheet.mergeCells(`A3:${endColumn}3`);
+  sheet.getCell('A3').value = report.subtitle;
+  sheet.getCell('A3').font = { name: 'Aptos', size: 11, color: { argb: 'FF241E1A' } };
+  sheet.getCell('A3').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2E9D8' } };
+  sheet.mergeCells(`A4:${endColumn}4`);
+  sheet.getCell('A4').value = `Dicetak: ${report.printedAt.toLocaleString('id-ID')}`;
+  sheet.getCell('A4').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2E9D8' } };
+  sheet.mergeCells(`A5:${endColumn}5`);
+  sheet.getCell('A5').value = `Jumlah data: ${report.recordCount}  |  Total nilai: ${money(report.totalAmount)}`;
+  sheet.getCell('A5').font = { bold: true, color: { argb: 'FF241E1A' } };
+  sheet.getCell('A5').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2E9D8' } };
+  const headerRow = sheet.addRow(['No.', ...report.headers]);
+  headerRow.height = 24;
+  headerRow.eachCell((cell) => {
+    cell.font = { name: 'Aptos', bold: true, color: { argb: 'FFF2E9D8' } };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F3A2E' } };
+    cell.alignment = { vertical: 'middle', wrapText: true };
+    cell.border = {
+      top: { style: 'thin', color: { argb: 'FFB59A62' } },
+      left: { style: 'thin', color: { argb: 'FFB59A62' } },
+      bottom: { style: 'thin', color: { argb: 'FFB59A62' } },
+      right: { style: 'thin', color: { argb: 'FFB59A62' } }
+    };
+  });
+  report.rows.forEach((values, index) => {
+    const row = sheet.addRow([index + 1, ...values]);
+    row.eachCell((cell, column) => {
+      cell.alignment = { vertical: 'top', wrapText: true };
+      cell.border = {
+        top: { style: 'thin', color: { argb: 'FFB59A62' } },
+        left: { style: 'thin', color: { argb: 'FFB59A62' } },
+        bottom: { style: 'thin', color: { argb: 'FFB59A62' } },
+        right: { style: 'thin', color: { argb: 'FFB59A62' } }
+      };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: index % 2 === 1 ? 'FFE9E2D2' : 'FFF2E9D8' } };
+      if (column > 1 && report.currencyColumns.includes(column - 2)) {
+        cell.numFmt = '"Rp" #,##0;[Red]("Rp" #,##0);-';
+      }
+    });
+  });
+  sheet.columns.forEach((column, index) => {
+    const values = [index === 0 ? 'No.' : report.headers[index - 1], ...report.rows.map((row) => String(row[index - 1] ?? ''))];
+    const width = Math.max(...values.map((value) => value.length)) + 3;
+    column.width = Math.min(42, Math.max(index === 0 ? 7 : 12, width));
+  });
+  sheet.views = [{ state: 'frozen', ySplit: 6 }];
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${report.filename}.xlsx`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function downloadPdf(report) {
+  const JsPDF = window.jspdf?.jsPDF;
+  if (!JsPDF) throw new Error('Pustaka PDF tidak tersedia. Periksa koneksi internet lalu coba lagi.');
+  const pdf = new JsPDF({ orientation: report.headers.length > 6 ? 'landscape' : 'portrait', unit: 'mm', format: 'a4' });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  pdf.setFillColor(31, 58, 46);
+  pdf.rect(0, 0, pageWidth, 38, 'F');
+  pdf.setFillColor(181, 154, 98);
+  pdf.rect(0, 37, pageWidth, 1, 'F');
+  pdf.setTextColor(242, 233, 216);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(11);
+  pdf.text('GRAMMATE BOOKSTORE', 14, 10);
+  pdf.setTextColor(201, 147, 59);
+  pdf.setFontSize(14);
+  pdf.text(report.title, 14, 18, { maxWidth: pageWidth - 28 });
+  pdf.setTextColor(242, 233, 216);
+  pdf.setFontSize(11);
+  pdf.text(report.subtitle, 14, 25);
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(9);
+  pdf.text(`Dicetak: ${report.printedAt.toLocaleString('id-ID')}   |   Jumlah data: ${report.recordCount}   |   Total nilai: ${money(report.totalAmount)}`, 14, 32);
+  const rows = report.rows.map((row, index) => [
+    index + 1,
+    ...row.map((value, column) => report.currencyColumns.includes(column) ? money(value) : String(value ?? '-'))
+  ]);
+  if (typeof pdf.autoTable !== 'function') throw new Error('Plugin tabel PDF tidak tersedia.');
+  pdf.autoTable({
+    startY: 42,
+    head: [['No.', ...report.headers]],
+    body: rows,
+    theme: 'grid',
+    styles: { font: 'helvetica', fontSize: report.headers.length > 7 ? 7 : 8, cellPadding: 2.2, overflow: 'linebreak', fillColor: [242, 233, 216], textColor: [36, 30, 26], lineColor: [181, 154, 98], lineWidth: .2 },
+    headStyles: { fillColor: [31, 58, 46], textColor: [242, 233, 216], fontStyle: 'bold', lineColor: [181, 154, 98], lineWidth: .35 },
+    alternateRowStyles: { fillColor: [233, 226, 210] },
+    margin: { left: 12, right: 12, bottom: 15 },
+    horizontalPageBreak: report.headers.length > 7,
+    showHead: 'everyPage'
+  });
+  const pageCount = pdf.internal.getNumberOfPages();
+  for (let page = 1; page <= pageCount; page += 1) {
+    pdf.setPage(page);
+    pdf.setFontSize(8);
+    pdf.setTextColor(107, 29, 36);
+    pdf.text(`Grammate Bookstore  |  Halaman ${page} dari ${pageCount}`, pageWidth - 12, pdf.internal.pageSize.getHeight() - 7, { align: 'right' });
+  }
+  pdf.save(`${report.filename}.pdf`);
+}
+document.querySelectorAll('[data-export][data-format="csv"]').forEach((csvButton) => {
+  const xlsxButton = csvButton.cloneNode(true);
+  xlsxButton.dataset.format = 'xlsx';
+  xlsxButton.textContent = 'Unduh Excel';
+  csvButton.after(xlsxButton);
+});
+document.querySelectorAll('[data-export]').forEach((button) => on(button, 'click', async () => {
+  try {
+    const report = exportData(button.dataset.export);
+    if (button.dataset.format === 'csv') downloadCsv(report);
+    else if (button.dataset.format === 'xlsx') await downloadXlsx(report);
+    else if (button.dataset.format === 'pdf') downloadPdf(report);
+    else throw new Error('Format ekspor tidak didukung.');
+  } catch (error) {
+    console.error('Report export failed:', error);
+    showStatus(`Gagal mengekspor laporan: ${error.message}`, 'error');
+  }
+}));
 function renderPartners() {
   const customerRow = (item) => `<tr><td>${safe(partnerId(item, 'pelanggan'))}</td><td>${safe(partnerName(item, 'pelanggan'))}</td><td>${safe(valueOf(item, 'kontak') || '-')}</td><td>${safe(valueOf(item, 'alamat') || '-')}</td>${actionCell('pelanggan', partnerId(item, 'pelanggan'))}</tr>`;
   const supplierRow = (item) => `<tr><td>${safe(partnerId(item, 'supplier'))}</td><td>${safe(partnerName(item, 'supplier'))}</td><td>${safe(valueOf(item, 'kontak') || '-')}</td><td>${safe(valueOf(item, 'alamat') || '-')}</td>${actionCell('supplier', partnerId(item, 'supplier'))}</tr>`;
@@ -344,17 +613,75 @@ function renderTransactions() {
     const row = entry.row;
     const ref = reference(row);
     const partner = entry.partner || '-';
-    return `<tr><td>${dateText(row)}</td><td>${safe(ref)}</td><td>${safe(partner)}</td><td>${safe(entry.item)}</td><td>${entry.quantity}</td><td>${money(valueOf(row, 'harga_satuan'))}</td><td>${money(entry.total)}</td></tr>`;
+    const headerId = kind === 'pembelian' ? valueOf(row, 'id_pembelian') : valueOf(row, 'id_penjualan');
+    const detailId = kind === 'pembelian' ? valueOf(row, 'id_detail_beli') : valueOf(row, 'id_detail_jual');
+    return `<tr><td>${dateText(row)}</td><td>${safe(ref)}</td><td>${safe(partner)}</td><td>${safe(entry.item)}</td><td>${entry.quantity}</td><td>${money(valueOf(row, 'harga_satuan'))}</td><td>${money(entry.total)}</td><td><div class="table-actions"><button class="table-action" type="button" data-transaction-action="edit" data-kind="${kind}" data-id="${safe(headerId)}" data-detail-id="${safe(detailId)}">${actionIcon('edit')}Edit</button></div></td></tr>`;
   };
-  setRows('pembelian-body', purchases, 7, (entry) => transactionRow(entry, 'pembelian'));
+  setRows('pembelian-body', purchases, 8, (entry) => transactionRow(entry, 'pembelian'));
   setRows('laporan-pembelian-body', purchases, 6, (entry) => `<tr><td>${dateText(entry.row)}</td><td>${safe(reference(entry.row))}</td><td>${safe(entry.partner)}</td><td>${safe(entry.item)}</td><td>${entry.quantity}</td><td>${money(entry.total)}</td></tr>`);
-  setRows('penjualan-body', sales, 7, (entry) => transactionRow(entry, 'penjualan'));
+  setRows('penjualan-body', sales, 8, (entry) => transactionRow(entry, 'penjualan'));
   setRows('laporan-penjualan-body', sales, 6, (entry) => `<tr><td>${dateText(entry.row)}</td><td>${safe(reference(entry.row))}</td><td>${safe(entry.partner)}</td><td>${safe(entry.item)}</td><td>${entry.quantity}</td><td>${money(entry.total)}</td></tr>`);
   setRows('penyesuaian-body', adjustments, 5, (entry) => `<tr><td>${dateText(entry.row)}</td><td>${safe(entry.item)}</td><td>${safe(valueOf(entry.row, 'jenis_penyesuaian') || entry.kind)}</td><td>${entry.quantity}</td><td>${safe(description(entry.row))}</td></tr>`);
   const purchaseTotal = document.getElementById('purchase-total');
   const salesTotal = document.getElementById('sales-total');
   if (purchaseTotal) purchaseTotal.textContent = `Total ${money(purchases.reduce((sum, entry) => sum + entry.total, 0))}`;
   if (salesTotal) salesTotal.textContent = `Total ${money(sales.reduce((sum, entry) => sum + entry.total, 0))}`;
+  renderTransactionChart();
+}
+let transactionChart;
+function transactionCount(rows, idKey) {
+  return new Set(rows.map((row, index) => {
+    const id = valueOf(row, idKey);
+    const ref = valueOf(row, 'no_faktur', 'no_nota');
+    return String(id || ref || `transaksi-${index}`);
+  })).size;
+}
+function renderTransactionChart() {
+  const canvas = document.getElementById('transaction-chart');
+  const unavailable = document.getElementById('chart-unavailable');
+  if (!canvas) return;
+  if (typeof window.Chart !== 'function') {
+    if (unavailable) unavailable.hidden = false;
+    return;
+  }
+  if (unavailable) unavailable.hidden = true;
+  const data = [
+    transactionCount(state.pembelian, 'id_pembelian'),
+    transactionCount(state.penjualan, 'id_penjualan')
+  ];
+  if (transactionChart) {
+    transactionChart.data.datasets[0].data = data;
+    transactionChart.update();
+    return;
+  }
+  transactionChart = new window.Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: ['Pembelian', 'Penjualan'],
+      datasets: [{
+        label: 'Jumlah transaksi',
+        data,
+        backgroundColor: ['#A8442A', '#354A3A'],
+        borderColor: ['#8C351E', '#3B576E'],
+        borderWidth: 1,
+        borderRadius: 0,
+        maxBarThickness: 110
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (context) => `${context.label}: ${context.parsed.y} transaksi` } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#26211D' } },
+        y: { beginAtZero: true, ticks: { precision: 0, color: '#26211D' }, grid: { color: 'rgba(38, 33, 29, .16)' } }
+      }
+    }
+  });
 }
 function renderAccounting() {
   const journal = [...state.jurnal].sort((a, b) => new Date(dateValue(b) || 0) - new Date(dateValue(a) || 0));
@@ -499,6 +826,7 @@ function attachDetails(headers, details, transactionIdKey) {
   });
 }
 async function renderData() {
+  if (!authenticated) return;
   const requestId = ++renderRequestId;
   if (!getClient()) { showStatus('Client Supabase tidak tersedia. Periksa konfigurasi backend/app.js.', 'error'); return; }
   let masterDataLoaded = false;
@@ -507,7 +835,7 @@ async function renderData() {
     const [barang, pelanggan, supplier] = await Promise.all([
       fetchTable(TABLES.barang), fetchTable(TABLES.pelanggan), fetchTable(TABLES.supplier)
     ]);
-    if (requestId !== renderRequestId) return;
+    if (requestId !== renderRequestId || !authenticated) return;
     Object.assign(state, { barang, pelanggan, supplier });
     masterDataLoaded = true;
     renderMasterData();
@@ -517,7 +845,7 @@ async function renderData() {
       fetchTable(TABLES.penjualan), fetchTable(TABLES.detailPenjualan),
       fetchTable(TABLES.penyesuaian), fetchTable(TABLES.jurnal)
     ]);
-    if (requestId !== renderRequestId) return;
+    if (requestId !== renderRequestId || !authenticated) return;
     const pembelian = attachDetails(pembelianHeader, pembelianDetail, 'id_pembelian');
     const penjualan = attachDetails(penjualanHeader, penjualanDetail, 'id_penjualan');
     Object.assign(state, { pembelian, penjualan, penyesuaian, jurnal });
@@ -538,7 +866,10 @@ async function renderData() {
     if (requestId === renderRequestId) setDataLoading(false, true);
   }
 }
-async function loadData() { return renderData(); }
+async function loadData() {
+  if (!authenticated) return;
+  return renderData();
+}
 function subscribeRealtime() {
   const client = getClient();
   if (!client?.channel || realtimeChannel) return;
@@ -749,6 +1080,8 @@ function bindMaster(formId, table, makePayload, label) {
 }
 bindMaster('form-barang', TABLES.barang, (values) => ({
   sku: values.kode_barang.trim(), nama_barang: values.nama_barang.trim(), stok: Number(values.stok),
+  penulis: values.penulis.trim() || null, isbn: values.isbn.trim() || null,
+  kategori: values.kategori.trim() || null, penerbit: values.penerbit.trim() || null,
   harga_pokok: Number(values.harga_beli), harga_jual: Number(values.harga_jual)
 }), 'Barang');
 bindMaster('form-pelanggan', TABLES.pelanggan, (values) => ({
@@ -778,11 +1111,13 @@ function openMasterEdit(kind, id) {
   }
   masterEditForm.dataset.kind = kind;
   masterEditForm.dataset.id = id;
+  const deleteButton = document.getElementById('delete-master-button');
+  if (deleteButton) deleteButton.hidden = false;
   if (masterEditTitle) masterEditTitle.textContent = `Edit ${pageTitles[`data-${kind}`] || kind}`;
   masterEditFields.innerHTML = config.fields.map((field) => {
     const type = field.type || 'text';
     const width = field.fullWidth ? ' full-width' : '';
-    return `<label class="form-field${width}"><span>${safe(field.label)}</span><input name="${safe(field.name)}" type="${safe(type)}"${field.min !== undefined ? ` min="${safe(field.min)}"` : ''}${field.step !== undefined ? ` step="${safe(field.step)}"` : ''} value="${safe(record[field.name] ?? '')}" required /></label>`;
+    return `<label class="form-field${width}"><span>${safe(field.label)}</span><input name="${safe(field.name)}" type="${safe(type)}"${field.min !== undefined ? ` min="${safe(field.min)}"` : ''}${field.step !== undefined ? ` step="${safe(field.step)}"` : ''} value="${safe(record[field.name] ?? '')}"${field.required === false ? '' : ' required'} /></label>`;
   }).join('');
   addDateField(masterEditFields, null, record.created_at);
   masterEditModal.hidden = false;
@@ -792,8 +1127,8 @@ function openMasterEdit(kind, id) {
 }
 async function deleteMaster(kind, id) {
   const config = masterConfig[kind];
-  if (!config || id === undefined || id === '') return;
-  if (!window.confirm('Apakah Anda yakin ingin menghapus data ini?')) return;
+  if (!config || id === undefined || id === '') return false;
+  if (!window.confirm(`Apakah Anda yakin ingin menghapus ${pageTitles[`data-${kind}`] || kind} ini? Tindakan ini tidak dapat dibatalkan.`)) return false;
   try {
     const { error } = await getClient().from(config.table).delete().eq(config.idColumn, id);
     if (error) throw error;
@@ -803,13 +1138,14 @@ async function deleteMaster(kind, id) {
     if (errorText.includes('foreign key') || errorText.includes('violates foreign key constraint')) {
       showStatus('Data tidak dapat dihapus karena memiliki riwayat transaksi atau jurnal keuangan.', 'error');
       await renderData();
-      return;
+      return false;
     }
     showStatus(`Gagal menghapus data: ${error.message}`, 'error');
-    return;
+    return false;
   }
   await renderData();
   showStatus(`${pageTitles[`data-${kind}`] || kind} berhasil dihapus.`, 'info');
+  return true;
 }
 Object.entries(masterConfig).forEach(([kind, config]) => {
   const tableBody = document.getElementById(config.bodyId);
@@ -818,7 +1154,6 @@ Object.entries(masterConfig).forEach(([kind, config]) => {
     if (!button || !tableBody.contains(button) || button.dataset.masterKind !== kind) return;
     const id = button.dataset.id;
     if (button.dataset.masterAction === 'edit') openMasterEdit(kind, id);
-    if (button.dataset.masterAction === 'delete') await deleteMaster(kind, id);
   });
 });
 document.querySelectorAll('[data-close-edit]').forEach((button) => on(button, 'click', closeMasterEdit));
@@ -967,8 +1302,413 @@ on(adjustmentForm, 'submit', async (event) => {
     await loadData();
   }
 });
+const transactionEditModal = document.getElementById('transaction-edit-modal');
+const transactionEditForm = document.getElementById('transaction-edit-form');
+const transactionEditFields = document.getElementById('transaction-edit-fields');
+const transactionEditTitle = document.getElementById('transaction-edit-title');
+
+function closeTransactionEdit() {
+  if (!transactionEditModal) return;
+  transactionEditModal.classList.remove('active');
+  transactionEditModal.hidden = true;
+  transactionEditModal.setAttribute('aria-hidden', 'true');
+  transactionEditForm?.reset();
+}
+
+async function deleteTransaction(kind, headerId) {
+  if (!kind || !headerId) return false;
+  if (!window.confirm(`Hapus transaksi ${kind === 'pembelian' ? 'pembelian' : 'penjualan'} ini beserta stok dan jurnalnya? Tindakan ini tidak dapat dibatalkan.`)) return false;
+  const isPurchase = kind === 'pembelian';
+  const headerTable = isPurchase ? TABLES.pembelian : TABLES.penjualan;
+  const detailTable = isPurchase ? TABLES.detailPembelian : TABLES.detailPenjualan;
+  const headerIdKey = isPurchase ? 'id_pembelian' : 'id_penjualan';
+  const referenceColumn = isPurchase ? 'no_faktur' : 'no_nota';
+  try {
+    const { data: headers, error: headerError } = await getClient().from(headerTable).select('*').eq(headerIdKey, headerId);
+    if (headerError) throw headerError;
+    const header = headers?.[0];
+    if (!header) throw new Error('Transaksi tidak ditemukan.');
+    const { data: details, error: detailError } = await getClient().from(detailTable).select('*').eq(headerIdKey, headerId);
+    if (detailError) throw detailError;
+
+    for (const detail of details || []) {
+      const item = state.barang.find((row) => String(itemId(row)) === String(detail.id_barang));
+      if (!item) continue;
+      const quantity = qtyOf(detail);
+      const currentItem = await getClient().from(TABLES.barang).select('stok').eq('id_barang', detail.id_barang).single();
+      if (currentItem.error) throw currentItem.error;
+      const current = Number(currentItem.data.stok) || 0;
+      const restoredStock = isPurchase ? current - quantity : current + quantity;
+      if (restoredStock < 0) throw new Error(`Stok ${itemName(item)} tidak cukup untuk membatalkan transaksi.`);
+      await updateStock(item, restoredStock);
+    }
+
+    const reference = header[referenceColumn];
+    if (reference) {
+      const { error: journalError } = await getClient().from(TABLES.jurnal).delete().eq('no_bukti', reference);
+      if (journalError) throw journalError;
+    }
+    const { error: deleteError } = await getClient().from(headerTable).delete().eq(headerIdKey, headerId);
+    if (deleteError) throw deleteError;
+    await renderData();
+    showStatus(`Transaksi ${isPurchase ? 'pembelian' : 'penjualan'} berhasil dihapus.`, 'info');
+    return true;
+  } catch (error) {
+    console.error('Transaction delete failed:', error);
+    showStatus(`Gagal menghapus transaksi: ${error.message}`, 'error');
+    return false;
+  }
+}
+
+async function openTransactionEdit(kind, headerId) {
+  const isPurchase = kind === 'pembelian';
+  const headerTable = isPurchase ? TABLES.pembelian : TABLES.penjualan;
+  const detailTable = isPurchase ? TABLES.detailPembelian : TABLES.detailPenjualan;
+  const headerIdKey = isPurchase ? 'id_pembelian' : 'id_penjualan';
+  const referenceColumn = isPurchase ? 'no_faktur' : 'no_nota';
+  const partnerKey = isPurchase ? 'id_supplier' : 'id_pelanggan';
+  try {
+    const { data: headers, error: headerError } = await getClient().from(headerTable).select('*').eq(headerIdKey, headerId);
+    if (headerError) throw headerError;
+    const header = headers?.[0];
+    if (!header) throw new Error('Transaksi tidak ditemukan.');
+    const { data: details, error: detailError } = await getClient().from(detailTable).select('*').eq(headerIdKey, headerId);
+    if (detailError) throw detailError;
+    const detail = details?.[0];
+    if (!detail) throw new Error('Detail transaksi tidak ditemukan.');
+
+    transactionEditForm.dataset.kind = kind;
+    transactionEditForm.dataset.id = headerId;
+    transactionEditForm.dataset.partnerId = header[partnerKey];
+    transactionEditForm.dataset.itemId = detail.id_barang;
+    transactionEditForm.dataset.detailId = isPurchase ? detail.id_detail_beli : detail.id_detail_jual;
+    transactionEditForm.dataset.oldQuantity = detail.jumlah;
+    transactionEditTitle.textContent = `Edit Transaksi ${isPurchase ? 'Pembelian' : 'Penjualan'}`;
+    const partnerOptions = (isPurchase ? state.supplier : state.pelanggan).map((partner) => {
+      const selectedPartnerId = isPurchase ? partnerId(partner, 'supplier') : partnerId(partner, 'pelanggan');
+      const name = isPurchase ? partnerName(partner, 'supplier') : partnerName(partner, 'pelanggan');
+      return `<option value="${safe(selectedPartnerId)}">${safe(name)}</option>`;
+    }).join('');
+    const itemOptions = state.barang.map((item) => `<option value="${safe(itemId(item))}">${safe(itemCode(item))} · ${safe(itemName(item))}</option>`).join('');
+    transactionEditFields.innerHTML = `
+      <label class="form-field"><span>${isPurchase ? 'No Faktur' : 'No Nota'}</span><input name="reference" value="${safe(header[referenceColumn] || '')}" required /></label>
+      <label class="form-field"><span>${isPurchase ? 'Supplier' : 'Pelanggan'}</span><select name="partner_id" required>${partnerOptions}</select></label>
+      <label class="form-field"><span>Barang</span><select name="barang_id" required>${itemOptions}</select></label>
+      <label class="form-field"><span>Jumlah</span><input name="jumlah" type="number" min="1" step="1" value="${safe(detail.jumlah)}" required /></label>
+      <label class="form-field"><span>${isPurchase ? 'Harga Beli' : 'Harga Jual'} per Unit</span><input name="unit_price" type="number" min="0.01" step="0.01" value="${safe(detail.harga_satuan)}" required /></label>
+    `;
+    addDateField(transactionEditFields, null, header.tanggal || header.created_at);
+    transactionEditFields.querySelector('[name="partner_id"]').value = String(header[partnerKey]);
+    transactionEditFields.querySelector('[name="barang_id"]').value = String(detail.id_barang);
+    transactionEditModal.hidden = false;
+    transactionEditModal.setAttribute('aria-hidden', 'false');
+    transactionEditModal.classList.add('active');
+  } catch (error) {
+    showStatus(`Gagal memuat transaksi: ${error.message}`, 'error');
+  }
+}
+
+async function submitTransactionEdit(event) {
+  event.preventDefault();
+  const kind = transactionEditForm.dataset.kind;
+  const headerId = transactionEditForm.dataset.id;
+  if (!kind || !headerId) return;
+  const isPurchase = kind === 'pembelian';
+  const values = formValues(transactionEditForm);
+  const quantity = Number(values.jumlah);
+  const unitPrice = Number(values.unit_price);
+  const item = state.barang.find((row) => String(itemId(row)) === String(values.barang_id));
+  if (!item || !Number.isInteger(quantity) || quantity < 1 || !Number.isFinite(unitPrice) || unitPrice <= 0) {
+    showStatus('Lengkapi barang, jumlah, dan harga transaksi.', 'error');
+    return;
+  }
+
+  const headerTable = isPurchase ? TABLES.pembelian : TABLES.penjualan;
+  const detailTable = isPurchase ? TABLES.detailPembelian : TABLES.detailPenjualan;
+  const headerIdKey = isPurchase ? 'id_pembelian' : 'id_penjualan';
+  const detailIdKey = isPurchase ? 'id_detail_beli' : 'id_detail_jual';
+  const detailId = transactionEditForm.dataset.detailId;
+  const oldItemId = transactionEditForm.dataset.itemId;
+  const oldQuantity = Number(transactionEditForm.dataset.oldQuantity);
+  const referenceColumn = isPurchase ? 'no_faktur' : 'no_nota';
+  const partnerKey = isPurchase ? 'id_supplier' : 'id_pelanggan';
+  const createdAt = dateTimestamp(values.tanggal);
+  try {
+    const { data: oldHeaders, error: oldHeaderError } = await getClient().from(headerTable).select('*').eq(headerIdKey, headerId);
+    if (oldHeaderError) throw oldHeaderError;
+    const oldHeader = oldHeaders?.[0];
+    const oldReference = oldHeader?.[referenceColumn] || '';
+
+    const oldItem = state.barang.find((row) => String(itemId(row)) === String(oldItemId));
+    if (oldItem) {
+      const currentOldItem = await getClient().from(TABLES.barang).select('stok').eq('id_barang', oldItemId).single();
+      if (currentOldItem.error) throw currentOldItem.error;
+      const restoredStock = isPurchase
+        ? Number(currentOldItem.data.stok) - oldQuantity
+        : Number(currentOldItem.data.stok) + oldQuantity;
+      if (restoredStock < 0) throw new Error(`Stok ${itemName(oldItem)} tidak cukup untuk proses edit.`);
+      await updateStock(oldItem, restoredStock);
+    }
+
+    const currentItem = await getClient().from(TABLES.barang).select('stok,harga_pokok,harga_jual').eq('id_barang', itemId(item)).single();
+    if (currentItem.error) throw currentItem.error;
+    const targetStock = isPurchase
+      ? Number(currentItem.data.stok) + quantity
+      : Number(currentItem.data.stok) - quantity;
+    if (targetStock < 0) throw new Error(`Stok ${itemName(item)} tidak cukup.`);
+    await updateStock(item, targetStock);
+
+    const total = quantity * unitPrice;
+    await getClient().from(detailTable).update({ id_barang: itemId(item), jumlah: quantity, harga_satuan: unitPrice }).eq(detailIdKey, detailId);
+    await updateRow(headerTable, headerIdKey, headerId, {
+      [referenceColumn]: values.reference.trim(),
+      [partnerKey]: Number(values.partner_id),
+      total_bayar: total
+    }, createdAt);
+
+    const newReference = values.reference.trim();
+    if (oldReference) {
+      await getClient().from(TABLES.jurnal).delete().eq('no_bukti', oldReference);
+    }
+    const cogs = quantity * Number(valueOf(item, 'harga_pokok') || 0);
+    const entries = isPurchase
+      ? journalPair({ reference: newReference, description: `Pembelian ${itemName(item)}`, debitAccount: 'Persediaan Barang', creditAccount: 'Kas', amount: total, createdAt })
+      : [...journalPair({ reference: newReference, description: `Penjualan ${itemName(item)}`, debitAccount: 'Kas', creditAccount: 'Pendapatan', amount: total, createdAt }), ...journalPair({ reference: newReference, description: `HPP ${itemName(item)}`, debitAccount: 'Beban Pokok Penjualan', creditAccount: 'Persediaan Barang', amount: cogs, createdAt })];
+    await insertRows(TABLES.jurnal, entries, createdAt);
+
+    closeTransactionEdit();
+    await renderData();
+    showStatus(`Transaksi ${isPurchase ? 'pembelian' : 'penjualan'} berhasil diperbarui.`, 'info');
+  } catch (error) {
+    console.error('Transaction edit failed:', error);
+    showStatus(`Gagal memperbarui transaksi: ${error.message}`, 'error');
+  }
+}
+
+document.querySelectorAll('[data-close-transaction]').forEach((button) => on(button, 'click', closeTransactionEdit));
+on(transactionEditModal, 'click', (event) => { if (event.target === transactionEditModal) closeTransactionEdit(); });
+on(transactionEditForm, 'submit', submitTransactionEdit);
+
+on(document, 'click', (event) => {
+  const button = event.target?.closest?.('[data-transaction-action]');
+  if (!button) return;
+  const kind = button.dataset.kind;
+  const headerId = button.dataset.id;
+  if (button.dataset.transactionAction === 'delete') deleteTransaction(kind, headerId);
+  if (button.dataset.transactionAction === 'edit') openTransactionEdit(kind, headerId);
+});
+
 on(document.getElementById('ledger-account'), 'change', () => renderLedger());
 on(document.getElementById('inventory-card-item'), 'change', () => renderInventoryCard());
+on(document.getElementById('delete-master-button'), 'click', async () => {
+  const kind = masterEditForm.dataset.kind;
+  const id = masterEditForm.dataset.id;
+  if (await deleteMaster(kind, id)) closeMasterEdit();
+});
+on(document.getElementById('delete-transaction-button'), 'click', async () => {
+  const kind = transactionEditForm.dataset.kind;
+  const id = transactionEditForm.dataset.id;
+  if (await deleteTransaction(kind, id)) closeTransactionEdit();
+});
 
-setPage(window.location.hash.slice(1) || 'dashboard');
-loadData();
+const loginScreen = document.getElementById('login-screen');
+const loginForm = document.getElementById('login-form');
+const loginUsername = document.getElementById('login-username');
+const loginPassword = document.getElementById('login-password');
+const loginError = document.getElementById('login-error');
+const togglePassword = document.getElementById('toggle-password');
+const appShell = document.querySelector('.app-shell');
+const loginSessionKey = 'grammate-bookstore-session';
+const defaultCredentials = { username: 'admin', password: 'buku123' };
+const loginClockTime = document.getElementById('login-clock-time');
+const loginClockDate = document.getElementById('login-clock-date');
+const calendarDays = document.getElementById('login-calendar-days');
+const calendarMonthLabel = document.getElementById('login-calendar-month');
+const calendarSelection = document.getElementById('login-calendar-selection');
+const loginCompanion = document.getElementById('login-companion');
+const clockHourHand = document.querySelector('.clock-hour');
+const clockMinuteHand = document.querySelector('.clock-minute');
+const clockSecondHand = document.querySelector('.clock-second');
+const idDateTime = new Intl.DateTimeFormat('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+const idMonthYear = new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' });
+let calendarMonth = new Date();
+let selectedCalendarDate = new Date();
+selectedCalendarDate.setHours(0, 0, 0, 0);
+
+function updateLoginClock() {
+  const now = new Date();
+  if (loginClockTime) loginClockTime.textContent = now.toLocaleTimeString('id-ID', { hour12: false });
+  if (loginClockDate) loginClockDate.textContent = idDateTime.format(now);
+  const seconds = now.getSeconds();
+  const minutes = now.getMinutes() + seconds / 60;
+  const hours = (now.getHours() % 12) + minutes / 60;
+  if (clockSecondHand) clockSecondHand.style.transform = `rotate(${seconds * 6}deg)`;
+  if (clockMinuteHand) clockMinuteHand.style.transform = `rotate(${minutes * 6}deg)`;
+  if (clockHourHand) clockHourHand.style.transform = `rotate(${hours * 30}deg)`;
+}
+
+function renderLoginCalendar() {
+  if (!calendarDays || !calendarMonthLabel || !calendarSelection) return;
+  calendarMonthLabel.textContent = idMonthYear.format(calendarMonth);
+  calendarDays.replaceChildren();
+  const firstDay = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), 1);
+  const offset = firstDay.getDay();
+  const daysInMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 0).getDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (let index = 0; index < offset; index += 1) {
+    const blank = document.createElement('span');
+    blank.className = 'calendar-empty';
+    blank.setAttribute('aria-hidden', 'true');
+    calendarDays.append(blank);
+  }
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const date = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), day);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'calendar-day';
+    button.textContent = String(day);
+    button.setAttribute('aria-label', idDateTime.format(date));
+    if (date.getTime() === today.getTime()) button.classList.add('is-today');
+    if (date.getTime() === selectedCalendarDate.getTime()) {
+      button.classList.add('is-selected');
+      button.setAttribute('aria-pressed', 'true');
+    } else button.setAttribute('aria-pressed', 'false');
+    button.addEventListener('click', () => {
+      selectedCalendarDate = date;
+      renderLoginCalendar();
+    });
+    calendarDays.append(button);
+  }
+  calendarSelection.textContent = idDateTime.format(selectedCalendarDate);
+}
+
+document.querySelectorAll('[data-calendar-step]').forEach((button) => on(button, 'click', () => {
+  calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + Number(button.dataset.calendarStep), 1);
+  renderLoginCalendar();
+}));
+
+const dragHandle = document.getElementById('companion-drag-handle');
+if (loginCompanion && dragHandle) {
+  dragHandle.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    const rect = loginCompanion.getBoundingClientRect();
+    const staysInFlow = window.getComputedStyle(loginCompanion).position !== 'fixed';
+    if (!staysInFlow) {
+      loginCompanion.style.left = `${rect.left}px`;
+      loginCompanion.style.top = `${rect.top}px`;
+      loginCompanion.style.right = 'auto';
+      loginCompanion.style.bottom = 'auto';
+    }
+    loginCompanion.classList.add('is-dragging');
+    dragHandle.setPointerCapture(event.pointerId);
+    const offsetX = event.clientX - rect.left;
+    const offsetY = event.clientY - rect.top;
+    const move = (moveEvent) => {
+      const maxLeft = Math.max(0, window.innerWidth - loginCompanion.offsetWidth);
+      const maxTop = Math.max(0, window.innerHeight - loginCompanion.offsetHeight);
+      const nextLeft = Math.max(0, Math.min(maxLeft, moveEvent.clientX - offsetX));
+      const nextTop = Math.max(0, Math.min(maxTop, moveEvent.clientY - offsetY));
+      const loginRect = loginForm?.getBoundingClientRect();
+      const overlapsLogin = loginRect
+        && nextLeft < loginRect.right
+        && nextLeft + loginCompanion.offsetWidth > loginRect.left
+        && nextTop < loginRect.bottom
+        && nextTop + loginCompanion.offsetHeight > loginRect.top;
+      if (overlapsLogin) return;
+      if (staysInFlow) {
+        loginCompanion.style.transform = `translate3d(${nextLeft - rect.left}px, ${nextTop - rect.top}px, 0)`;
+      } else {
+        loginCompanion.style.left = `${nextLeft}px`;
+        loginCompanion.style.top = `${nextTop}px`;
+      }
+    };
+    const finish = () => {
+      loginCompanion.classList.remove('is-dragging');
+      dragHandle.removeEventListener('pointermove', move);
+      dragHandle.removeEventListener('pointerup', finish);
+      dragHandle.removeEventListener('pointercancel', finish);
+    };
+    dragHandle.addEventListener('pointermove', move);
+    dragHandle.addEventListener('pointerup', finish, { once: true });
+    dragHandle.addEventListener('pointercancel', finish, { once: true });
+  });
+}
+updateLoginClock();
+window.setInterval(updateLoginClock, 1000);
+renderLoginCalendar();
+
+function enterDashboard() {
+  authenticated = true;
+  loginScreen.hidden = true;
+  appShell.hidden = false;
+  setPage(window.location.hash.slice(1) || 'dashboard');
+  loadData();
+}
+
+on(togglePassword, 'click', () => {
+  const showing = loginPassword.type === 'password';
+  loginPassword.type = showing ? 'text' : 'password';
+  togglePassword.setAttribute('aria-label', showing ? 'Sembunyikan password' : 'Tampilkan password');
+  togglePassword.setAttribute('aria-pressed', String(showing));
+  togglePassword.classList.toggle('is-visible', showing);
+});
+
+on(loginForm, 'submit', (event) => {
+  event.preventDefault();
+  const username = loginUsername.value.trim();
+  const password = loginPassword.value;
+  if (username !== defaultCredentials.username || password !== defaultCredentials.password) {
+    loginError.textContent = 'Username atau password tidak sesuai. Silakan coba lagi.';
+    loginError.hidden = false;
+    loginPassword.select();
+    return;
+  }
+  loginError.hidden = true;
+  try { sessionStorage.setItem(loginSessionKey, 'true'); } catch (error) {
+    console.warn('Sesi login tidak dapat disimpan:', error);
+  }
+  enterDashboard();
+});
+
+on(loginForm, 'input', () => {
+  if (loginError) loginError.hidden = true;
+});
+
+on(document.getElementById('logout-button'), 'click', () => {
+  authenticated = false;
+  try { sessionStorage.removeItem(loginSessionKey); } catch (error) {
+    console.warn('Sesi login tidak dapat dihapus:', error);
+  }
+  window.clearTimeout(refreshTimer);
+  renderRequestId += 1;
+  setDataLoading(false, true);
+  if (realtimeChannel) {
+    const channel = realtimeChannel;
+    realtimeChannel = null;
+    const client = getClient();
+    if (client?.removeChannel) {
+      client.removeChannel(channel).then(({ error }) => {
+        if (error) console.warn('Supabase Realtime unsubscribe failed:', error);
+      }).catch((error) => console.warn('Supabase Realtime unsubscribe failed:', error));
+    }
+  }
+  appShell.hidden = true;
+  loginScreen.hidden = false;
+  loginForm.reset();
+  loginPassword.type = 'password';
+  togglePassword.setAttribute('aria-label', 'Tampilkan password');
+  togglePassword.setAttribute('aria-pressed', 'false');
+  togglePassword.classList.remove('is-visible');
+  loginError.hidden = true;
+  loginUsername.focus();
+});
+
+try {
+  if (sessionStorage.getItem(loginSessionKey) === 'true') enterDashboard();
+  else loginUsername.focus();
+} catch (error) {
+  console.warn('Status sesi login tidak dapat dibaca:', error);
+  loginUsername.focus();
+}

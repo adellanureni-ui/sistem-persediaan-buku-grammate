@@ -3,14 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#E4568B" />
+  <meta name="theme-color" content="#FAF7F0" />
   <title>Grammate Bookstore | Sistem Persediaan Buku & Akuntansi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app-shell">
+  <svg class="ambient-wallpaper" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="shop-wall" x2="0" y2="1"><stop stop-color="#f8e8c9"/><stop offset="1" stop-color="#ead3ae"/></linearGradient>
+      <linearGradient id="window-light" x2="0" y2="1"><stop stop-color="#b9d8d0"/><stop offset="1" stop-color="#f4d7a2"/></linearGradient>
+      <pattern id="wall-dots" width="26" height="26" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="#795d47" opacity=".22"/></pattern>
+    </defs>
+    <path fill="url(#shop-wall)" d="M0 0h1440v900H0z"/>
+    <path fill="url(#wall-dots)" d="M0 0h1440v900H0z"/>
+    <path fill="#8d6548" opacity=".72" d="M0 0h1440v54H0zM0 846h1440v54H0z"/>
+    <path fill="#6d503d" opacity=".8" d="M0 58h1440v14H0zM0 828h1440v18H0z"/>
+    <g opacity=".82" stroke="#573e32" stroke-width="12">
+      <path fill="#a96f4d" d="M66 110h335v474H66z"/><path stroke-width="8" fill="url(#window-light)" d="M94 139h279v416H94z"/>
+      <path fill="none" stroke="#fff0d3" stroke-width="9" d="M233 139v416M94 350h279"/>
+      <path fill="#799477" stroke="none" d="M104 325q54-106 112 0v222H104zM241 316q60-98 123 0v231H241z"/>
+      <path fill="#d2a266" stroke="none" d="M105 474q76-93 137-15v96H105zM241 450q69-58 123 9v96H241z"/>
+      <path fill="#f2bc64" stroke="none" d="M120 182q35-25 70 0M278 195q32-20 62 0"/>
+    </g>
+    <g stroke="#573e32" stroke-width="10" stroke-linejoin="round">
+      <path fill="#986747" d="M1002 126h362v514h-362z"/>
+      <path fill="#d7ae7e" d="M986 250h392v22h-392zM986 392h392v22h-392zM986 535h392v22h-392z"/>
+      <g stroke-width="5">
+        <path fill="#d66e55" d="M1020 167h45v76h-45z"/><path fill="#e9c06e" d="M1071 151h39v92h-39z"/><path fill="#72917a" d="M1117 178h53v65h-53z"/><path fill="#849db4" d="M1176 158h44v85h-44z"/><path fill="#ce8761" d="M1227 174h56v69h-56z"/><path fill="#aa8661" d="M1290 148h43v95h-43z"/>
+        <path fill="#79967e" d="M1020 294h50v91h-50z"/><path fill="#d68c62" d="M1077 310h41v75h-41z"/><path fill="#e8bd70" d="M1125 286h48v99h-48z"/><path fill="#8299af" d="M1180 304h56v81h-56z"/><path fill="#cf6d54" d="M1243 290h39v95h-39z"/><path fill="#ad8862" d="M1289 312h44v73h-44z"/>
+        <path fill="#dfbc78" d="M1018 443h43v82h-43z"/><path fill="#cc7059" d="M1068 430h55v95h-55z"/><path fill="#819a82" d="M1130 452h43v73h-43z"/><path fill="#8498aa" d="M1180 436h51v89h-51z"/><path fill="#e5c27b" d="M1238 445h42v80h-42z"/><path fill="#b77c5c" d="M1287 431h47v94h-47z"/>
+      </g>
+    </g>
+    <g stroke="#5d4838" stroke-linejoin="round">
+      <path fill="#6f8e70" stroke-width="8" d="M452 633q-28-158 54-233 57 77 19 177 54-174 142-197 27 120-75 216 89-94 153-75-34 119-183 147z"/>
+      <path fill="#bb7650" stroke-width="8" d="M478 635h229l-25 162H505z"/>
+      <path fill="#eacb91" stroke-width="7" d="M306 731q-3-111 82-140 77 53 64 140z"/>
+      <path fill="#79543d" stroke-width="8" d="M278 731h202v21H278z"/>
+    </g>
+    <g stroke="#583f30" stroke-width="9" stroke-linejoin="round">
+      <path fill="#8d6043" d="M585 650h288v38H585zM609 688h23v153h-23zM826 688h23v153h-23z"/>
+      <path fill="#f2d89e" d="M668 609q69-59 138 0l-15 38H683z"/>
+      <path fill="#e6c98f" d="M721 606q-6-61 0-98"/><path fill="#e5bd70" d="M694 508q27-29 54 0l-8 22h-38z"/>
+      <path fill="#f3e5c8" d="M688 649q39-28 77 0v9h-77z"/>
+    </g>
+    <g stroke="#533d31" stroke-width="7" stroke-linejoin="round">
+      <path fill="#fff4dd" d="M703 728q54-35 106 0v93q-52-28-106 0z"/>
+      <path fill="#f2dfbd" d="M809 728q54-35 106 0v93q-52-28-106 0z"/>
+      <path fill="none" stroke-width="4" d="M809 728v92M720 752q28-12 57 0M720 773q28-12 57 0M829 752q29-12 70 0M829 773q29-12 70 0"/>
+    </g>
+    <g fill="#e8c789" stroke="#5b4433" stroke-width="7">
+      <path d="M875 697h78q-4 60-39 60t-39-60z"/><path fill="none" d="M953 711q38-6 28 24-7 16-29 12"/>
+    </g>
+    <path fill="#78543c" d="M0 810q250-38 493 0t470 0q246-39 477 0v42H0z"/>
+    <g fill="#6d513d" opacity=".72"><circle cx="525" cy="150" r="5"/><circle cx="558" cy="150" r="5"/><circle cx="591" cy="150" r="5"/><path d="M480 174h152v5H480zM480 191h111v5H480z"/></g>
+  </svg>
+  <section id="login-screen" class="login-screen" aria-labelledby="login-title">
+    <form id="login-form" class="login-card" novalidate>
+      <a class="login-brand" href="#dashboard" aria-label="Grammate Bookstore">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img" aria-label="Emblem Grammate: monogram G dan buku terbuka">
+            <path d="M24 2.5 43 9v13c0 11.4-7.7 18.9-19 23.5C12.7 40.9 5 33.4 5 22V9z" fill="#1F3A2E" stroke="#C8B692" stroke-width="1.5"/>
+            <path d="M24 5.5 40 11v11c0 9.5-6.1 16-16 20-9.9-4-16-10.5-16-20V11z" fill="none" stroke="#E8DEC8" stroke-width=".8"/>
+            <path d="M33.5 16.7a10.5 10.5 0 1 0 1.1 9.5H26v-4h13v3.3c-.9 7.5-6.9 12.5-14.7 12.5-8.4 0-14.8-6.4-14.8-14.8 0-8.2 6.4-14.7 14.8-14.7 4.5 0 7.8 1.5 10.3 4.1z" fill="#E8DEC8" stroke="#6B1D24" stroke-width="1"/>
+            <path d="M24 26v12m0-7c-3.1-2.7-6.5-3.4-10.2-2.3v8c3.8-1 7.2-.3 10.2 2.3 3-2.6 6.4-3.3 10.2-2.3v-8C30.5 27.6 27.1 28.3 24 31Z" fill="#F2E9D8" stroke="#6B1D24" stroke-width="1.1" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </a>
+      <p class="eyebrow">SISTEM PERSEDIAAN BUKU</p>
+      <h1 id="login-title">Selamat datang</h1>
+      <p class="subheading">Masuk untuk mengelola Grammate Bookstore.</p>
+      <label class="form-field" for="login-username">Username
+        <input id="login-username" name="username" autocomplete="username" required />
+      </label>
+      <label class="form-field" for="login-password">Password
+        <span class="password-input-wrap">
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+          <button id="toggle-password" class="password-toggle" type="button" aria-label="Tampilkan password" aria-pressed="false">
+            <svg class="eye-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>
+            <svg class="eye-off-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 6.2A10.8 10.8 0 0 1 12 6c6.1 0 9.5 6 9.5 6a15 15 0 0 1-3.1 3.6M6.2 6.3C3.8 8 2.5 12 2.5 12s3.4 6 9.5 6c1.2 0 2.3-.3 3.3-.7"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>
+          </button>
+        </span>
+      </label>
+      <p id="login-error" class="login-error" role="alert" aria-live="polite" hidden></p>
+      <button class="primary-btn login-submit" type="submit">Masuk ke Dashboard</button>
+    </form>
+    <aside class="login-companion" id="login-companion" aria-label="Jam dan kalender">
+    <div class="companion-heading">
+      <span class="companion-brand">Grammate · Almanak</span>
+      <button class="companion-drag-handle" id="companion-drag-handle" type="button" aria-label="Geser widget jam dan kalender" title="Geser widget">⠿</button>
+    </div>
+    <section class="clock-card" aria-label="Jam real-time">
+      <div class="clock-face" aria-hidden="true"><span class="clock-hand clock-hour"></span><span class="clock-hand clock-minute"></span><span class="clock-hand clock-second"></span><span class="clock-pin"></span></div>
+      <div><time id="login-clock-time" class="clock-time">00:00:00</time><p id="login-clock-date" class="clock-date"></p></div>
+    </section>
+    <section class="calendar-card" aria-label="Kalender interaktif">
+      <header class="calendar-heading">
+        <button type="button" class="calendar-nav" data-calendar-step="-1" aria-label="Bulan sebelumnya">‹</button>
+        <h2 id="login-calendar-month"></h2>
+        <button type="button" class="calendar-nav" data-calendar-step="1" aria-label="Bulan berikutnya">›</button>
+      </header>
+      <div class="calendar-grid calendar-weekdays" aria-hidden="true">
+        <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+      </div>
+      <div class="calendar-grid" id="login-calendar-days" role="group" aria-label="Pilih tanggal"></div>
+      <p class="calendar-selection" id="login-calendar-selection" aria-live="polite"></p>
+    </section>
+    </aside>
+  </section>
+  <div class="app-shell" hidden>
     <aside class="sidebar" id="main-sidebar">
-      <a class="brand" href="#dashboard" data-page="dashboard" aria-label="Grammate Bookstore, ringkasan"><span class="brand-mark"><img id="logo-toko-pixel" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f3ea.png" alt="Fasad toko buku pixel art" /></span><span><small>SISTEM PERSEDIAAN BUKU</small><strong>Grammate Bookstore</strong></span></a>
+      <a class="brand" href="#dashboard" data-page="dashboard" aria-label="Grammate Bookstore, ringkasan"><span class="brand-mark"><svg id="logo-toko-pixel" viewBox="0 0 48 48" role="img" aria-label="Emblem Grammate: monogram G dan buku terbuka"><path d="M24 2.5 43 9v13c0 11.4-7.7 18.9-19 23.5C12.7 40.9 5 33.4 5 22V9z" fill="#1F3A2E" stroke="#C8B692" stroke-width="1.5"/><path d="M24 5.5 40 11v11c0 9.5-6.1 16-16 20-9.9-4-16-10.5-16-20V11z" fill="none" stroke="#E8DEC8" stroke-width=".8"/><path d="M33.5 16.7a10.5 10.5 0 1 0 1.1 9.5H26v-4h13v3.3c-.9 7.5-6.9 12.5-14.7 12.5-8.4 0-14.8-6.4-14.8-14.8 0-8.2 6.4-14.7 14.8-14.7 4.5 0 7.8 1.5 10.3 4.1z" fill="#E8DEC8" stroke="#6B1D24" stroke-width="1"/><path d="M24 26v12m0-7c-3.1-2.7-6.5-3.4-10.2-2.3v8c3.8-1 7.2-.3 10.2 2.3 3-2.6 6.4-3.3 10.2-2.3v-8C30.5 27.6 27.1 28.3 24 31Z" fill="#F2E9D8" stroke="#6B1D24" stroke-width="1.1" stroke-linejoin="round"/></svg></span><span><small>SISTEM PERSEDIAAN BUKU</small><strong>Grammate Bookstore</strong></span></a>
       <nav class="nav" aria-label="Navigasi utama">
         <a class="nav-item active" href="#dashboard" data-page="dashboard"><img class="pixel-sticker" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4c5.png" alt="" aria-hidden="true" />Ringkasan</a>
         <div class="nav-group"><span class="nav-heading">GRUP DATA</span><a class="nav-item" href="#data-barang" data-page="data-barang"><img class="pixel-sticker" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4c1.png" alt="" aria-hidden="true" />Data Buku</a><a class="nav-item" href="#data-pelanggan" data-page="data-pelanggan"><img class="pixel-sticker" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4c1.png" alt="" aria-hidden="true" />Data Pelanggan</a><a class="nav-item" href="#data-supplier" data-page="data-supplier"><img class="pixel-sticker" src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f4c1.png" alt="" aria-hidden="true" />Data Supplier</a></div>
@@ -22,19 +127,20 @@
       <div class="sidebar-footer"><span class="live-dot"></span> Supabase ERP</div>
     </aside>
     <main class="main-content">
-      <div class="topline"><button class="sidebar-toggle" id="btn-toggle-sidebar" type="button" aria-label="Sembunyikan sidebar" aria-controls="main-sidebar" aria-expanded="true" title="Sembunyikan sidebar">☰</button><span class="breadcrumb">Grammate Bookstore <span>/</span> <strong id="current-section">Ringkasan</strong></span><span class="date-label" id="today-label"></span></div>
+      <div class="topline"><button class="sidebar-toggle" id="btn-toggle-sidebar" type="button" aria-label="Sembunyikan sidebar" aria-controls="main-sidebar" aria-expanded="true" title="Sembunyikan sidebar">☰</button><a class="header-brand" href="#dashboard" data-page="dashboard" aria-label="Kembali ke Ringkasan"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M37 15.5A16 16 0 1 0 39.5 26H27"/><path d="M24 10v27M24 37c-5-4-10-5-16-3V18c6-2 11-1 16 3 5-4 10-5 16-3v7"/></svg><span>Grammate</span></a><span class="breadcrumb">Grammate Bookstore <span>/</span> <strong id="current-section">Ringkasan</strong></span><span class="date-label" id="today-label"></span><button class="logout-btn" id="logout-button" type="button">Keluar</button></div>
       <section id="page-dashboard" class="page">
         <header class="page-header"><div><p class="eyebrow">RINGKASAN BISNIS</p><h1>Ringkasan</h1><p class="subheading">Ringkasan persediaan, mitra, dan aktivitas usaha.</p></div><button class="secondary-btn" type="button" data-refresh>↻ <span>Muat ulang</span></button></header>
         <header class="retro-banner"><div class="retro-banner-copy"><span class="retro-window-label">GRAMMATE BOOKSTORE / RINGKASAN</span><h2>Selamat datang di Grammate Bookstore</h2></div></header>
         <div class="stats-grid executive-stats">
-          <article class="stat-card"><span class="stat-icon icon-wine">▤</span><div><span class="stat-label">Total Judul Buku</span><strong id="stat-barang">0</strong><small>Judul buku terdaftar</small></div></article>
-          <article class="stat-card"><span class="stat-icon icon-teal">▣</span><div><span class="stat-label">Unit Stok Tersedia</span><strong id="stat-stok">0</strong><small>total unit di semua barang</small></div></article>
-          <article class="stat-card"><span class="stat-icon icon-amber">♙</span><div><span class="stat-label">Total Mitra</span><strong id="stat-mitra">0</strong><small>pelanggan dan supplier</small></div></article>
+          <article class="stat-card"><span class="stat-icon icon-wine" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5zM8 8h8M8 12h8M8 16h5"/></svg></span><div><span class="stat-label">Total Judul Buku</span><strong id="stat-barang">0</strong><small>Judul buku terdaftar</small></div></article>
+          <article class="stat-card"><span class="stat-icon icon-teal" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h16v13H4zM8 7V4h8v3M8 12h8M8 16h5"/></svg></span><div><span class="stat-label">Unit Stok Tersedia</span><strong id="stat-stok">0</strong><small>total unit di semua barang</small></div></article>
+          <article class="stat-card"><span class="stat-icon icon-amber" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2zM16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5v1"/></svg></span><div><span class="stat-label">Total Mitra</span><strong id="stat-mitra">0</strong><small>pelanggan dan supplier</small></div></article>
         </div>
+        <section class="panel chart-panel"><div class="section-header"><div><p class="eyebrow">PERBANDINGAN</p><h2>Jumlah Transaksi</h2></div><span class="chart-live"><span class="live-dot"></span> Data Supabase</span></div><div class="chart-wrap"><canvas id="transaction-chart" role="img" aria-label="Grafik jumlah transaksi pembelian dibandingkan penjualan"></canvas><p id="chart-unavailable" class="chart-unavailable" hidden>Grafik tidak tersedia. Periksa koneksi pustaka Chart.js.</p></div></section>
         <section class="panel"><div class="section-header"><div><p class="eyebrow">AKTIVITAS</p><h2>Riwayat Transaksi Terbaru</h2></div></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Jenis Aktivitas</th><th>Referensi</th><th>Barang</th><th>Mitra / Keterangan</th><th>Jumlah</th><th>Total</th></tr></thead><tbody id="dashboard-activity-body"></tbody></table></div></section>
       </section>
 
-      <section id="page-data-barang" class="page" hidden><header class="page-header"><div><p class="eyebrow">MASTER DATA</p><h1>Data Buku</h1><p class="subheading">Kelola katalog dan jumlah persediaan.</p></div></header><section class="panel"><div class="section-header"><h2>Tambah Buku Baru</h2></div><form id="form-barang" class="form-grid"><label class="form-field"><span>Kode Buku</span><input name="kode_barang" required placeholder="BRG-001" /></label><label class="form-field"><span>Nama Buku</span><input name="nama_barang" required /></label><label class="form-field"><span>Satuan</span><input name="satuan" required placeholder="pcs / buku" /></label><label class="form-field"><span>Harga Beli</span><input name="harga_beli" type="number" min="0" step="1" required /></label><label class="form-field"><span>Harga Jual</span><input name="harga_jual" type="number" min="0" step="1" required /></label><label class="form-field"><span>Stok Awal</span><input name="stok" type="number" min="0" step="1" value="0" required /></label><div class="form-actions"><button class="primary-btn" type="submit">Tambah Buku Baru</button></div></form></section><section class="panel"><div class="section-header"><h2>Seluruh Koleksi Buku</h2></div><div class="table-wrap"><table><thead><tr><th>Kode Buku</th><th>Nama Buku</th><th>Satuan</th><th>Harga Beli</th><th>Harga Jual</th><th>Stok</th><th>Aksi</th></tr></thead><tbody id="barang-body"></tbody></table></div></section></section>
+      <section id="page-data-barang" class="page" hidden><header class="page-header"><div><p class="eyebrow">MASTER DATA</p><h1>Data Buku</h1><p class="subheading">Kelola katalog dan jumlah persediaan buku.</p></div><div class="export-actions"><button class="secondary-btn" type="button" data-export="books" data-format="csv">Unduh CSV</button><button class="secondary-btn" type="button" data-export="books" data-format="pdf">Cetak PDF</button></div></header><section class="panel"><div class="section-header"><h2>Tambah Buku Baru</h2></div><form id="form-barang" class="form-grid"><label class="form-field"><span>Kode Buku</span><input name="kode_barang" required placeholder="BRG-001" /></label><label class="form-field"><span>Judul Buku</span><input name="nama_barang" required /></label><label class="form-field"><span>Penulis</span><input name="penulis" /></label><label class="form-field"><span>ISBN</span><input name="isbn" /></label><label class="form-field"><span>Kategori</span><input name="kategori" /></label><label class="form-field"><span>Penerbit</span><input name="penerbit" /></label><label class="form-field"><span>Harga Beli</span><input name="harga_beli" type="number" min="0" step="1" required /></label><label class="form-field"><span>Harga Jual</span><input name="harga_jual" type="number" min="0" step="1" required /></label><label class="form-field"><span>Stok Awal</span><input name="stok" type="number" min="0" step="1" value="0" required /></label><div class="form-actions"><button class="primary-btn" type="submit">+ Tambah Buku Baru</button></div></form></section><section class="panel"><div class="section-header"><div><h2>Seluruh Koleksi Buku</h2><p class="subheading" id="book-filter-count">Menampilkan semua buku</p></div></div><div class="advanced-filters" data-book-filters><label class="form-field"><span>Judul</span><input type="search" data-book-filter="judul" placeholder="Cari judul..." /></label><label class="form-field"><span>Penulis</span><input type="search" data-book-filter="penulis" placeholder="Cari penulis..." /></label><label class="form-field"><span>ISBN</span><input type="search" data-book-filter="isbn" placeholder="Cari ISBN..." /></label><label class="form-field"><span>Kategori</span><input type="search" data-book-filter="kategori" placeholder="Cari kategori..." /></label><label class="form-field"><span>Penerbit</span><input type="search" data-book-filter="penerbit" placeholder="Cari penerbit..." /></label><label class="form-field"><span>Status Stok</span><select data-book-filter="status"><option value="">Semua status</option><option value="tersedia">Tersedia</option><option value="menipis">Stok Menipis</option><option value="habis">Habis</option></select></label><button class="secondary-btn clear-filters" type="button" data-clear-book-filters>Reset Filter</button></div><div class="table-wrap"><table><thead><tr><th>Kode</th><th>Judul</th><th>Penulis</th><th>ISBN</th><th>Kategori</th><th>Penerbit</th><th>Harga Beli</th><th>Harga Jual</th><th>Stok</th><th>Aksi</th></tr></thead><tbody id="barang-body"></tbody></table></div></section></section>
 
       <section id="page-data-pelanggan" class="page" hidden><header class="page-header"><div><p class="eyebrow">MASTER DATA</p><h1>Data Pelanggan</h1><p class="subheading">Daftar pelanggan toko.</p></div></header><section class="panel"><div class="section-header"><h2>Tambah Pelanggan</h2></div><form id="form-pelanggan" class="form-grid"><label class="form-field"><span>Nama Pelanggan</span><input name="nama" required /></label><label class="form-field"><span>Telepon</span><input name="telepon" /></label><label class="form-field full-width"><span>Alamat</span><input name="alamat" /></label><div class="form-actions"><button class="primary-btn" type="submit">Simpan Pelanggan</button></div></form></section><section class="panel"><div class="section-header"><h2>Seluruh Pelanggan</h2></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Nama</th><th>Telepon</th><th>Alamat</th><th>Aksi</th></tr></thead><tbody id="pelanggan-body"></tbody></table></div></section></section>
 
@@ -48,9 +154,9 @@
 
       <section id="page-jurnal-umum" class="page" hidden><header class="page-header"><div><p class="eyebrow">AKUNTANSI</p><h1>Jurnal Umum</h1><p class="subheading">Pencatatan debit dan kredit dari transaksi.</p></div></header><section class="panel"><div class="section-header"><h2>Daftar Jurnal</h2><strong class="balance-chip" id="journal-balance">Debit Rp 0 · Kredit Rp 0</strong></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Referensi</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="jurnal-body"></tbody></table></div></section></section>
       <section id="page-buku-besar" class="page" hidden><header class="page-header"><div><p class="eyebrow">AKUNTANSI</p><h1>Buku Besar</h1><p class="subheading">Mutasi setiap akun berdasarkan jurnal umum.</p></div></header><section class="panel"><div class="section-header"><h2>Rincian Buku Besar</h2><label class="inline-filter"><span>Akun</span><select id="ledger-account"><option value="all">Semua akun</option></select></label></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Referensi</th><th>Akun</th><th>Keterangan</th><th>Debit</th><th>Kredit</th><th>Saldo</th></tr></thead><tbody id="buku-besar-body"></tbody></table></div></section></section>
-      <section id="page-laporan-barang" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Laporan Barang</h1><p class="subheading">Posisi stok dan nilai persediaan saat ini.</p></div></header><section class="panel"><div class="section-header"><h2>Ringkasan Barang</h2></div><div class="table-wrap"><table><thead><tr><th>Kode</th><th>Nama Barang</th><th>Satuan</th><th>Stok</th><th>Harga Beli</th><th>Nilai Stok</th></tr></thead><tbody id="laporan-barang-body"></tbody></table></div></section></section>
-      <section id="page-laporan-pembelian" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Laporan Pembelian</h1><p class="subheading">Rekap transaksi pembelian barang.</p></div></header><section class="panel"><div class="section-header"><h2>Riwayat Pembelian</h2><strong class="balance-chip" id="purchase-total">Total Rp 0</strong></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No Faktur</th><th>Supplier</th><th>Barang</th><th>Jumlah</th><th>Total</th></tr></thead><tbody id="laporan-pembelian-body"></tbody></table></div></section></section>
-      <section id="page-laporan-penjualan" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Laporan Penjualan</h1><p class="subheading">Rekap transaksi penjualan barang.</p></div></header><section class="panel"><div class="section-header"><h2>Riwayat Penjualan</h2><strong class="balance-chip" id="sales-total">Total Rp 0</strong></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No Nota</th><th>Pelanggan</th><th>Barang</th><th>Jumlah</th><th>Total</th></tr></thead><tbody id="laporan-penjualan-body"></tbody></table></div></section></section>
+      <section id="page-laporan-barang" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Laporan Buku</h1><p class="subheading">Posisi stok dan nilai persediaan buku saat ini.</p></div><div class="export-actions"><button class="secondary-btn" type="button" data-export="books" data-format="csv">Unduh CSV</button><button class="secondary-btn" type="button" data-export="books" data-format="pdf">Cetak PDF</button></div></header><section class="panel"><div class="section-header"><div><h2>Ringkasan Koleksi Buku</h2><p class="subheading">Mengikuti filter aktif pada halaman Data Buku.</p></div></div><div class="advanced-filters" data-book-filters><label class="form-field"><span>Judul</span><input type="search" data-book-filter="judul" placeholder="Cari judul..." /></label><label class="form-field"><span>Penulis</span><input type="search" data-book-filter="penulis" placeholder="Cari penulis..." /></label><label class="form-field"><span>ISBN</span><input type="search" data-book-filter="isbn" placeholder="Cari ISBN..." /></label><label class="form-field"><span>Kategori</span><input type="search" data-book-filter="kategori" placeholder="Cari kategori..." /></label><label class="form-field"><span>Penerbit</span><input type="search" data-book-filter="penerbit" placeholder="Cari penerbit..." /></label><label class="form-field"><span>Status Stok</span><select data-book-filter="status"><option value="">Semua status</option><option value="tersedia">Tersedia</option><option value="menipis">Stok Menipis</option><option value="habis">Habis</option></select></label><button class="secondary-btn clear-filters" type="button" data-clear-book-filters>Reset Filter</button></div><div class="table-wrap"><table><thead><tr><th>Kode</th><th>Judul</th><th>Penulis</th><th>ISBN</th><th>Kategori</th><th>Penerbit</th><th>Stok</th><th>Harga Beli</th><th>Nilai Stok</th></tr></thead><tbody id="laporan-barang-body"></tbody></table></div></section></section>
+      <section id="page-laporan-pembelian" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Laporan Pembelian</h1><p class="subheading">Rekap transaksi pembelian barang.</p></div><div class="export-actions"><button class="secondary-btn" type="button" data-export="purchases" data-format="csv">Unduh CSV</button><button class="secondary-btn" type="button" data-export="purchases" data-format="pdf">Cetak PDF</button></div></header><section class="panel"><div class="section-header"><h2>Riwayat Pembelian</h2><strong class="balance-chip" id="purchase-total">Total Rp 0</strong></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No Faktur</th><th>Supplier</th><th>Barang</th><th>Jumlah</th><th>Total</th></tr></thead><tbody id="laporan-pembelian-body"></tbody></table></div></section></section>
+      <section id="page-laporan-penjualan" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Laporan Penjualan</h1><p class="subheading">Rekap transaksi penjualan barang.</p></div><div class="export-actions"><button class="secondary-btn" type="button" data-export="sales" data-format="csv">Unduh CSV</button><button class="secondary-btn" type="button" data-export="sales" data-format="pdf">Cetak PDF</button></div></header><section class="panel"><div class="section-header"><h2>Riwayat Penjualan</h2><strong class="balance-chip" id="sales-total">Total Rp 0</strong></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>No Nota</th><th>Pelanggan</th><th>Barang</th><th>Jumlah</th><th>Total</th></tr></thead><tbody id="laporan-penjualan-body"></tbody></table></div></section></section>
       <section id="page-kartu-persediaan" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN</p><h1>Kartu Persediaan</h1><p class="subheading">Alur stok masuk, keluar, dan saldo per barang.</p></div></header><section class="panel"><div class="section-header"><h2>Pergerakan Persediaan</h2><label class="inline-filter"><span>Barang</span><select id="inventory-card-item"><option value="all">Semua barang</option></select></label></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Referensi</th><th>Barang</th><th>Jenis</th><th>Masuk</th><th>Keluar</th><th>Saldo</th></tr></thead><tbody id="kartu-persediaan-body"></tbody></table></div></section></section>
       <section id="page-laporan-laba-rugi" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN KEUANGAN</p><h1>Laporan Laba Rugi</h1><p class="subheading">Pendapatan dikurangi beban pokok penjualan.</p></div></header><section class="panel financial-report"><div class="section-header"><h2>Ringkasan Laba Rugi</h2></div><div class="financial-lines"><div><span>Pendapatan Penjualan</span><strong id="profit-revenue">Rp 0</strong></div><div><span>Beban Pokok Penjualan</span><strong id="profit-cogs">(Rp 0)</strong></div><div class="financial-total"><span>Laba (Rugi) Kotor</span><strong id="profit-net">Rp 0</strong></div></div></section><section class="panel"><div class="section-header"><h2>Jurnal Pendapatan & HPP</h2></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Referensi</th><th>Keterangan</th><th>Akun</th><th>Debit</th><th>Kredit</th></tr></thead><tbody id="profit-journal-body"></tbody></table></div></section></section>
       <section id="page-neraca" class="page" hidden><header class="page-header"><div><p class="eyebrow">LAPORAN KEUANGAN</p><h1>Neraca</h1><p class="subheading">Posisi saldo akun berdasarkan jurnal umum.</p></div></header><div class="two-column"><section class="panel"><div class="section-header"><h2>Aset</h2></div><div id="balance-assets" class="financial-lines"></div></section><section class="panel"><div class="section-header"><h2>Liabilitas dan Ekuitas</h2></div><div id="balance-liabilities" class="financial-lines"></div></section></div><section class="panel"><div class="section-header"><h2>Seluruh Akun</h2><strong class="balance-chip" id="balance-check">Aset Rp 0 · Liabilitas & Ekuitas Rp 0</strong></div><div class="table-wrap"><table><thead><tr><th>Akun</th><th>Debit</th><th>Kredit</th><th>Saldo Normal</th></tr></thead><tbody id="neraca-body"></tbody></table></div></section></section>
@@ -62,7 +168,16 @@
       <header class="modal-header"><h2 id="master-edit-title">Edit Data</h2><button class="icon-btn" type="button" data-close-edit aria-label="Tutup">×</button></header>
       <form id="master-edit-form" class="form-grid">
         <div id="master-edit-fields" class="form-grid modal-fields"></div>
-        <div class="form-actions"><button class="secondary-btn" type="button" data-close-edit>Batal</button><button class="primary-btn" type="submit">Simpan Perubahan</button></div>
+        <div class="form-actions edit-form-actions"><button class="danger-btn" id="delete-master-button" type="button">Hapus Data</button><span class="action-spacer"></span><button class="secondary-btn" type="button" data-close-edit>Batal</button><button class="primary-btn" type="submit">Simpan Perubahan</button></div>
+      </form>
+    </section>
+  </div>
+  <div id="transaction-edit-modal" class="modal-backdrop" hidden aria-hidden="true">
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="transaction-edit-title">
+      <header class="modal-header"><h2 id="transaction-edit-title">Edit Transaksi</h2><button class="icon-btn" type="button" data-close-transaction aria-label="Tutup">×</button></header>
+      <form id="transaction-edit-form" class="form-grid">
+        <div id="transaction-edit-fields" class="form-grid modal-fields"></div>
+        <div class="form-actions edit-form-actions"><button class="danger-btn" id="delete-transaction-button" type="button">Hapus Transaksi</button><span class="action-spacer"></span><button class="secondary-btn" type="button" data-close-transaction>Batal</button><button class="primary-btn" type="submit">Simpan Perubahan</button></div>
       </form>
     </section>
   </div>
@@ -70,6 +185,10 @@
     <label class="form-field"><span>Tanggal</span><input type="date" name="tanggal" class="form-tanggal" required /></label>
   </template>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
   <script src="../backend/app.js"></script>
   <script src="script.js"></script>
 </body>
